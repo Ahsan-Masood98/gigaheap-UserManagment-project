@@ -2,7 +2,7 @@ import React from "react";
 
 import TotalUserCard from "../Components/TotalUserCard";
 import { json, useLoaderData } from "react-router-dom";
-import { getAuthToken } from "../util/auth";
+import { getAuthToken, getCurrentUserType } from "../util/auth";
 
 const AdminDashboard = () => {
   const data = useLoaderData();
@@ -16,6 +16,10 @@ const AdminDashboard = () => {
 
 export default AdminDashboard;
 export const loader = async () => {
+  const userType = getCurrentUserType();
+  if (userType === "1") {
+    return null;
+  }
   const token = getAuthToken();
   const response = await fetch("http://localhost:8080/users", {
     method: "GET",

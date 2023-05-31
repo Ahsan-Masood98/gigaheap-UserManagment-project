@@ -30,18 +30,18 @@ function App() {
       loader: checkAuthLoader,
       children: [
         {
-          path: "/dashboard",
+          path: "",
           element: <AdminDashboard />,
           loader: userDeatilLoader,
         },
         {
-          path: "/dashboard/table",
+          path: "table",
           element: <EditUserDetail />,
           loader: userDeatilLoader,
           action: editUserAction,
         },
         {
-          path: "/dashboard/table/:id",
+          path: "table/:id",
           action: deleteUserAction,
         },
       ],

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({ userType }) => {
   return (
     <>
       {/* <!-- Sidebar --> */}
@@ -18,7 +18,7 @@ const Sidebar = () => {
             <i className="fas fa-laugh-wink"></i>
           </div>
           <div className="sidebar-brand-text mx-3">
-            SB Admin <sup>2</sup>
+            SB {userType === "0" ? "Admin" : "User"}
           </div>
         </Link>
 
@@ -33,22 +33,23 @@ const Sidebar = () => {
           </Link>
         </li>
 
-        {/* <!-- Divider --> */}
-        <hr className="sidebar-divider" />
-
-        {/* <!-- Heading --> */}
-        <div className="sidebar-heading">Users</div>
-
-        {/* <!-- Nav Item - Tables --> */}
-        <li className="nav-item">
-          <Link className="nav-link" to="/dashboard/table">
-            <i className="fas fa-fw fa-table"></i>
-            <span>Tables</span>
-          </Link>
-        </li>
-
-        {/* <!-- Divider --> */}
-        <hr className="sidebar-divider d-none d-md-block" />
+        {userType === "0" && (
+          <>
+            {/* <!-- Divider --> */}
+            <hr className="sidebar-divider" />
+            {/* <!-- Heading --> */}
+            <div className="sidebar-heading">Users</div>
+            {/* <!-- Nav Item - Tables --> */}
+            <li className="nav-item">
+              <Link className="nav-link" to="/dashboard/table">
+                <i className="fas fa-fw fa-table"></i>
+                <span>Tables</span>
+              </Link>
+            </li>
+            {/* <!-- Divider --> */}
+            <hr className="sidebar-divider d-none d-md-block" />
+          </>
+        )}
       </ul>
       {/* <!-- End of Sidebar --> */}
     </>

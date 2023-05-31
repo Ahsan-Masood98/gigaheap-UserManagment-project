@@ -1,27 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../Components/Sidebar";
 import LogoutModal from "../Components/LogoutModal";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
-import { Outlet, useLoaderData } from "react-router-dom";
+import {
+  useNavigate,
+  Outlet,
+  redirect,
+  useLoaderData,
+  useLocation,
+} from "react-router-dom";
 import CurrentUserInfo from "./CurrentUserInfo";
+import { getCurrentUserType } from "../util/auth";
 
 const DashboardLayout = () => {
   const data = useLoaderData();
-  console.log(data);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentUserType = getCurrentUserType();
+  const { pathname } = location;
+  console.log(location.pathname);
+  useEffect(() => {
+    if (currentUserType === "1" && pathname === "/dashboard/table") {
+      navigate("/dashboard");
+    }
+  }, [pathname, navigate, currentUserType]);
+
   return (
     <>
       {/* <!-- Page Wrapper --> */}
       <div id="wrapper">
         {/* <!-- Sidebar --> */}
-        <Sidebar />
+        <Sidebar userType={data.user.userType} />
 
         {/* <!-- Content Wrapper --> */}
         <div id="content-wrapper" className="d-flex flex-column">
           {/* <!-- Main Content --> */}
           <div id="content">
             {/* <!-- Topbar --> */}
-            <Header />
+            <Header
+              firstName={data.user.firstName}
+              lastName={data.user.lastName}
+            />
 
             {/* <!-- Begin Page Content --> */}
             <div className="container-fluid">
@@ -32,7 +52,7 @@ const DashboardLayout = () => {
               {/* <!-- Content Row --> */}
               {/* <TotalUserCard /> */}
               {/* <!-- Content Row --> */}
-              <CurrentUserInfo data={data} />
+              {data.user.userType === "1" && <CurrentUserInfo data={data} />}
               {data.user.userType === "0" && <Outlet />}
             </div>
             {/* <!-- /.container-fluid --> */}

@@ -38,7 +38,7 @@ const Signup = () => {
         .required("Required"),
       password: Yup.string()
         .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          /^(?=.*[!@#$%^&*()-=_+{}[\]|;':",.<>/?])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()-=_+{}[\]|;':",.<>/?]{8,}$/,
           `Password Must contain at least 8 charecters 1 upercase & lowercase leter & 1 special charecter`
         )
         .required("Required"),
