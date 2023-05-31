@@ -124,6 +124,12 @@ const EditModal = ({ user }) => {
                     readOnly
                   />
                 </div>
+                <input
+                  type="hidden"
+                  id="password"
+                  name="password"
+                  value={user.password}
+                />
                 <div className="modal-footer">
                   <button
                     className="btn btn-primary btn-user "

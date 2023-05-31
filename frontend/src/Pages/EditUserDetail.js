@@ -2,16 +2,11 @@ import React from "react";
 import { json, redirect, useLoaderData, useSubmit } from "react-router-dom";
 import EditModal from "../Components/EditModal";
 import { getAuthToken } from "../util/auth";
+import DeleteModal from "../Components/DeleteModal";
 
 const UserDetail = () => {
   const data = useLoaderData();
-  const submit = useSubmit();
-  const deleteUserHandler = (id) => {
-    submit(null, {
-      method: "delete",
-      action: `/dashboard/table/${id}`,
-    });
-  };
+
   return (
     <div>
       <div className="row">
@@ -71,7 +66,7 @@ const UserDetail = () => {
                           >
                             <button
                               type="button"
-                              className="btn btn-success"
+                              className="btn btn-success dropdown-item "
                               data-toggle="modal"
                               data-target={`#exampleModalCenter${data.id}`}
                             >
@@ -81,11 +76,14 @@ const UserDetail = () => {
 
                             <button
                               type="button"
-                              className="btn btn-danger"
-                              onClick={() => deleteUserHandler(data.id)}
+                              className="btn btn-danger dropdown-item "
+                              data-toggle="modal"
+                              data-target="#deleteModal"
+                              // onClick={() => deleteUserHandler(data.id)}
                             >
                               Delete
                             </button>
+                            <DeleteModal id={data.id} />
                           </div>
                         </td>
                       </tr>
@@ -115,6 +113,7 @@ export const action = async ({ request, params }) => {
     userType: data.get("userType"),
     isActive: isActive,
     DT: data.get("DT"),
+    password: data.get("password"),
   };
 
   const token = getAuthToken();

@@ -52,13 +52,11 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     return res.status(401).json({ message: "Authentication failed." });
   }
-
   if (user.isActive === false) {
     return res.status(401).json({
       message: "User is not Active anymore contact your admin",
     });
   }
-
   const pwIsValid = await isValidPassword(password, user.password);
   if (!pwIsValid) {
     return res.status(422).json({
