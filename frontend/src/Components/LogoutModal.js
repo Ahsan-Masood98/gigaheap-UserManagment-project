@@ -5,6 +5,8 @@ const LogoutModal = () => {
   const navigate = useNavigate();
   const onLogoutHandler = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("id");
+    localStorage.removeItem("userType");
     navigate("/");
   };
   return (

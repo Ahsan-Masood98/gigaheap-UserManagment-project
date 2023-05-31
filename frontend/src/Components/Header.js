@@ -6,13 +6,13 @@ const Header = ({ firstName, lastName }) => {
     <>
       {/* <!-- Topbar --> */}
       <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-        {/* <!-- Sidebar Toggle (Topbar) --> */}
+        {/* <!-- Sidebar Toggle (Topbar) -->
         <button
           id="sidebarToggleTop"
           className="btn btn-link d-md-none rounded-circle mr-3"
         >
           <i className="fa fa-bars"></i>
-        </button>
+        </button> */}
 
         {/* <!-- Topbar Search --> */}
         <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">

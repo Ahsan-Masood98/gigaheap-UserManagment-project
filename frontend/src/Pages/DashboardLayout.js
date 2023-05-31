@@ -18,7 +18,6 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const currentUserType = getCurrentUserType();
   const { pathname } = location;
-  console.log(location.pathname);
   useEffect(() => {
     if (currentUserType === "1" && pathname === "/dashboard/table") {
       navigate("/dashboard");

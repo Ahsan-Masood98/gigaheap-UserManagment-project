@@ -1,7 +1,5 @@
 import React from "react";
-import { Form, json, redirect, useNavigation } from "react-router-dom";
-import { getAuthToken } from "../util/auth";
-import { date } from "yup";
+import { Form, useNavigation } from "react-router-dom";
 
 const EditModal = ({ user }) => {
   const { firstName, lastName, id, userType, isActive, email, DT } = user;
