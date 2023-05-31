@@ -6,7 +6,6 @@ import Header from "../Components/Header";
 import {
   useNavigate,
   Outlet,
-  redirect,
   useLoaderData,
   useLocation,
 } from "react-router-dom";
