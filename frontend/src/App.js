@@ -18,15 +18,21 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
+      errorElement: <ErrorPage />,
       element: <Login />,
       action: loginAction,
     },
-    { path: "/signup", element: <Signup />, action: signUpAction },
+    {
+      path: "/signup",
+      element: <Signup />,
+
+      action: signUpAction,
+    },
     {
       path: "/dashboard",
       id: "uesrDetail",
       element: <DashboardLayout />,
-      errorElement: <ErrorPage />,
+
       loader: checkAuthLoader,
       children: [
         {

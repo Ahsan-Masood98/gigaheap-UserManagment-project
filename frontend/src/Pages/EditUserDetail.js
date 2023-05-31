@@ -65,23 +65,32 @@ const UserDetail = () => {
                             aria-label="Basic example"
                           >
                             <button
-                              type="button"
-                              className="btn btn-success dropdown-item "
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                margin: "0px 10px",
+                              }}
+                              className="btn btn-outline-success dropdown-item "
                               data-toggle="modal"
                               data-target={`#exampleModalCenter${data.id}`}
                             >
-                              Edit
+                              <i
+                                className="far fa-edit fa-lg"
+                                style={{ color: "#30bb47" }}
+                              ></i>
                             </button>
                             <EditModal user={data} />
 
                             <button
-                              type="button"
-                              className="btn btn-danger dropdown-item "
+                              style={{ all: "unset", cursor: "pointer" }}
+                              className="btn btn-outline-danger dropdown-item "
                               data-toggle="modal"
                               data-target="#deleteModal"
-                              // onClick={() => deleteUserHandler(data.id)}
                             >
-                              Delete
+                              <i
+                                className="far fa-trash-alt fa-lg"
+                                style={{ color: "#f40606" }}
+                              ></i>
                             </button>
                             <DeleteModal id={data.id} />
                           </div>
