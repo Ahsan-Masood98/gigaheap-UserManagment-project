@@ -3,7 +3,6 @@ import { Form, useNavigation } from "react-router-dom";
 
 const EditModal = ({ user }) => {
   const { firstName, lastName, id, userType, isActive, email, DT } = user;
-  //   console.log(user);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   return (

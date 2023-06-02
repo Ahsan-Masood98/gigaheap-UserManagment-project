@@ -1,23 +1,18 @@
 import { redirect, json } from "react-router-dom";
-import { getAuthToken } from "../util/auth";
+import { deleteUser } from "../Services/usersServices";
+import { toast } from "react-toastify";
 
 export async function action({ params, request }) {
   const id = params.id;
-  const token = getAuthToken();
-  const response = await fetch("http://localhost:8080/users/" + id, {
-    method: request.method,
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-
-  if (!response.ok) {
-    throw json(
-      { message: "Could not delete user." },
-      {
-        status: 500,
-      }
-    );
+  try {
+    const response = await deleteUser(id);
+    if (response.statusText !== "OK") {
+      throw json({ message: "Could not Delete User." }, { status: 500 });
+    }
+    toast.success(response.data.message);
+  } catch (error) {
+    toast.error(`${error.response.data.message} ${error.message}`);
   }
+
   return redirect("/dashboard/table");
 }

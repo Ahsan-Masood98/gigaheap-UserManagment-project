@@ -5,14 +5,17 @@ import {
   Link,
   json,
   redirect,
-  useActionData,
   useNavigation,
+  useSubmit,
 } from "react-router-dom";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { postCredentials } from "../Services/authServices";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
-  const data = useActionData();
+  const submit = useSubmit();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const formik = useFormik({
@@ -35,12 +38,16 @@ const Login = () => {
         .required("Required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      submit(values, {
+        method: "POST",
+        action: `/`,
+      });
     },
   });
   return (
     <div className="container">
       {/* <!-- Outer Row --> */}
+      <ToastContainer />
       <div className="row justify-content-center">
         <div className="col-xl-10 col-lg-12 col-md-9">
           <div className="card o-hidden border-0 shadow-lg my-5">
@@ -52,16 +59,12 @@ const Login = () => {
                   <div className="p-5">
                     <div className="text-center">
                       <h1 className="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                      {data && data.errors && (
-                        <div>
-                          {Object.values(data.errors).map((err) => (
-                            <p key={err}>{err}</p>
-                          ))}
-                        </div>
-                      )}
-                      {data && data.message && <p>{data.message}</p>}
                     </div>
-                    <Form method="post" action="/" className="user">
+                    <Form
+                      onSubmit={formik.handleSubmit}
+                      method="post"
+                      className="user"
+                    >
                       <div className="form-group">
                         <label htmlFor="email">Email</label>
                         <input
@@ -93,12 +96,6 @@ const Login = () => {
                         )}
                       </div>
 
-                      {/* <Link
-                        to={"/dashboard"}
-                        className="btn btn-primary btn-user btn-block"
-                      >
-                        Login
-                      </Link> */}
                       <button
                         className="btn btn-primary btn-user btn-block"
                         type="submit"
@@ -132,23 +129,22 @@ export const action = async ({ request, params }) => {
     email: data.get("email"),
     password: data.get("password"),
   };
-  const response = await fetch("http://localhost:8080/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  });
-  if (response.status === 422 || response.status === 401) {
-    return response;
+  try {
+    const response = await postCredentials(formData, "login");
+    const token = response.data.token;
+    localStorage.setItem("token", token);
+    localStorage.setItem("id", response.data.user.id);
+    localStorage.setItem("userType", response.data.user.userType);
+    return redirect("/dashboard");
+  } catch (error) {
+    if (error.response.status === 422 || error.response.status === 401) {
+      toast.error(
+        `${error.response.data.errors}  ${error.response.data.message}`
+      );
+      return null;
+    }
+    if (error.response.statusText !== "OK") {
+      throw json({ message: "Could not Login User." }, { status: 500 });
+    }
   }
-  if (!response.ok) {
-    throw json({ message: "Could not register User." }, { status: 500 });
-  }
-  const resData = await response.json();
-  const token = resData.token;
-  localStorage.setItem("token", token);
-  localStorage.setItem("id", resData.user.id);
-  localStorage.setItem("userType", resData.user.userType);
-  return redirect("/dashboard");
 };

@@ -1,14 +1,18 @@
 import React from "react";
-import { json, redirect, useLoaderData, useSubmit } from "react-router-dom";
+import { json, redirect, useLoaderData } from "react-router-dom";
 import EditModal from "../Components/EditModal";
-import { getAuthToken } from "../util/auth";
 import DeleteModal from "../Components/DeleteModal";
-
+import { editUser } from "../Services/usersServices";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const UserDetail = () => {
   const data = useLoaderData();
-
+  const {
+    data: { users },
+  } = data;
   return (
     <div>
+      <ToastContainer />
       <div className="row">
         {/* <!-- Area Chart --> */}
         <div className="col-xl-12 col-lg-10">
@@ -48,16 +52,16 @@ const UserDetail = () => {
                     </tr>
                   </tfoot>
                   <tbody>
-                    {data.users.map((data) => (
-                      <tr key={data.id}>
-                        <td>{data.firstName} </td>
-                        <td>{data.lastName} </td>
-                        <td>{data.email} </td>
+                    {users.map((user) => (
+                      <tr key={user.id}>
+                        <td>{user.firstName} </td>
+                        <td>{user.lastName} </td>
+                        <td>{user.email} </td>
                         <td>
-                          {data.userType === "1" ? "Regular User" : "Admin"}
+                          {user.userType === "1" ? "Regular User" : "Admin"}
                         </td>
-                        <td>{data.isActive ? "true" : "flase"} </td>
-                        <td>{data.DT} </td>
+                        <td>{user.isActive ? "true" : "flase"} </td>
+                        <td>{user.DT} </td>
                         <td>
                           <div
                             className="btn-group"
@@ -72,27 +76,27 @@ const UserDetail = () => {
                               }}
                               className="btn btn-outline-success dropdown-item "
                               data-toggle="modal"
-                              data-target={`#exampleModalCenter${data.id}`}
+                              data-target={`#exampleModalCenter${user.id}`}
                             >
                               <i
                                 className="far fa-edit fa-lg"
                                 style={{ color: "#30bb47" }}
                               ></i>
                             </button>
-                            <EditModal user={data} />
+                            <EditModal user={user} />
 
                             <button
                               style={{ all: "unset", cursor: "pointer" }}
                               className="btn btn-outline-danger dropdown-item "
                               data-toggle="modal"
-                              data-target="#deleteModal"
+                              data-target={`#deleteModal${user.id}`}
                             >
                               <i
                                 className="far fa-trash-alt fa-lg"
                                 style={{ color: "#f40606" }}
                               ></i>
                             </button>
-                            <DeleteModal id={data.id} />
+                            <DeleteModal id={user.id} />
                           </div>
                         </td>
                       </tr>
@@ -112,7 +116,7 @@ export default UserDetail;
 
 export const action = async ({ request, params }) => {
   const data = await request.formData();
-  const id = data.get("id");
+  const userId = data.get("id");
   const isActive = data.get("isActive") === "0" ? false : true;
   const updateForm = {
     id: data.get("id"),
@@ -125,20 +129,14 @@ export const action = async ({ request, params }) => {
     password: data.get("password"),
   };
 
-  const token = getAuthToken();
-  const response = await fetch("http://localhost:8080/users/" + id, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify(updateForm),
-  });
-  if (response.status === 422) {
-    return response;
-  }
-  if (!response.ok) {
-    throw json({ message: "Could not save event." }, { status: 500 });
+  try {
+    const response = await editUser(updateForm, userId);
+    if (response.statusText !== "OK") {
+      throw json({ message: "Could not Edit User." }, { status: 500 });
+    }
+    toast.success(response.data.message);
+  } catch (error) {
+    toast.error(`${error.response.data.message} ${error.message}`);
   }
   return redirect("/dashboard/table");
 };

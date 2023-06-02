@@ -2,14 +2,18 @@ import React from "react";
 
 import TotalUserCard from "../Components/TotalUserCard";
 import { json, useLoaderData } from "react-router-dom";
-import { getAuthToken, getCurrentUserType } from "../util/auth";
+import { getCurrentUserType } from "../util/auth";
+import { getUsers } from "../Services/usersServices";
 
 const AdminDashboard = () => {
   const data = useLoaderData();
+  const {
+    data: { users },
+  } = data;
+
   return (
     <>
-      {/* <!-- Content Row --> */}
-      <TotalUserCard data={data} />
+      <TotalUserCard users={users} />
     </>
   );
 };
@@ -20,14 +24,8 @@ export const loader = async () => {
   if (userType === "1") {
     return null;
   }
-  const token = getAuthToken();
-  const response = await fetch("http://localhost:8080/users", {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-  if (!response.ok) {
+  const response = await getUsers();
+  if (response.statusText !== "OK") {
     throw json({ message: "Could not fetch User." }, { status: 500 });
   }
   return response;

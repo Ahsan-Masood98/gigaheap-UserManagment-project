@@ -14,6 +14,9 @@ import { getCurrentUserType } from "../util/auth";
 
 const DashboardLayout = () => {
   const data = useLoaderData();
+  const {
+    data: { user },
+  } = data;
   const location = useLocation();
   const navigate = useNavigate();
   const currentUserType = getCurrentUserType();
@@ -29,17 +32,14 @@ const DashboardLayout = () => {
       {/* <!-- Page Wrapper --> */}
       <div id="wrapper">
         {/* <!-- Sidebar --> */}
-        <Sidebar userType={data.user.userType} />
+        <Sidebar userType={user.userType} />
 
         {/* <!-- Content Wrapper --> */}
         <div id="content-wrapper" className="d-flex flex-column">
           {/* <!-- Main Content --> */}
           <div id="content">
             {/* <!-- Topbar --> */}
-            <Header
-              firstName={data.user.firstName}
-              lastName={data.user.lastName}
-            />
+            <Header firstName={user.firstName} lastName={user.lastName} />
 
             {/* <!-- Begin Page Content --> */}
             <div className="container-fluid">
@@ -50,8 +50,8 @@ const DashboardLayout = () => {
               {/* <!-- Content Row --> */}
               {/* <TotalUserCard /> */}
               {/* <!-- Content Row --> */}
-              {data.user.userType === "1" && <CurrentUserInfo data={data} />}
-              {data.user.userType === "0" && <Outlet />}
+              {user.userType === "1" && <CurrentUserInfo user={user} />}
+              {user.userType === "0" && <Outlet />}
             </div>
             {/* <!-- /.container-fluid --> */}
           </div>

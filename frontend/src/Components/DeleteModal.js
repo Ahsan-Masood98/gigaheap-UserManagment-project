@@ -3,9 +3,9 @@ import { useSubmit } from "react-router-dom";
 
 const DeleteModal = ({ id }) => {
   const submit = useSubmit();
-  const deleteUserHandler = (id) => {
+  const deleteUserHandler = () => {
     submit(null, {
-      method: "delete",
+      method: "DELETE",
       action: `/dashboard/table/${id}`,
     });
   };
@@ -14,7 +14,7 @@ const DeleteModal = ({ id }) => {
       {/* <!-- Logout Modal--> */}
       <div
         className="modal fade"
-        id="deleteModal"
+        id={`deleteModal${id}`}
         tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
@@ -49,7 +49,7 @@ const DeleteModal = ({ id }) => {
               <button
                 className="btn btn-primary"
                 data-dismiss="modal"
-                onClick={() => deleteUserHandler(id)}
+                onClick={() => deleteUserHandler()}
               >
                 Delete
               </button>

@@ -5,14 +5,16 @@ import {
   Link,
   json,
   redirect,
-  useActionData,
   useNavigation,
+  useSubmit,
 } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { postCredentials } from "../Services/authServices";
+import { ToastContainer, toast } from "react-toastify";
 
 const Signup = () => {
-  const data = useActionData();
+  const submit = useSubmit();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const formik = useFormik({
@@ -46,10 +48,17 @@ const Signup = () => {
         .oneOf(["0", "1"], "Invalid User Type")
         .required("Required"),
     }),
+    onSubmit: (values) => {
+      submit(values, {
+        method: "POST",
+        action: `/signup`,
+      });
+    },
   });
   return (
     <>
       <div className="container">
+        <ToastContainer />
         <div className="card o-hidden border-0 shadow-lg my-5">
           <div className="card-body p-0">
             {/* <!-- Nested Row within Card Body --> */}
@@ -61,16 +70,12 @@ const Signup = () => {
                     <h1 className="h4 text-gray-900 mb-4">
                       Create an Account!
                     </h1>
-                    {data && data.errors && (
-                      <div>
-                        {Object.values(data.errors).map((err) => (
-                          <p key={err}>{err}</p>
-                        ))}
-                      </div>
-                    )}
-                    {data && data.message && <p>{data.message}</p>}
                   </div>
-                  <Form method="post" action="/signup" className="user">
+                  <Form
+                    onSubmit={formik.handleSubmit}
+                    method="post"
+                    className="user"
+                  >
                     <div className="form-group row">
                       <div className="col-sm-6 mb-3 mb-sm-0">
                         <div className="form-group">
@@ -161,12 +166,6 @@ const Signup = () => {
                         ) : null}
                       </div>
                     </div>
-                    {/* <Link
-                      to={"/login"}
-                      className="btn btn-primary btn-user btn-block"
-                    >
-                      Register Account
-                    </Link> */}
 
                     <button
                       className="btn btn-primary btn-user btn-block"
@@ -206,46 +205,19 @@ export const action = async ({ request, params }) => {
     DT: new Date().toLocaleString(),
     isActive: true,
   };
-  const response = await fetch("http://localhost:8080/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  });
-  if (response.status === 422 || response.status === 401) {
-    return response;
+  try {
+    await postCredentials(formData, "signup");
+    return redirect("/");
+  } catch (error) {
+    console.log(error);
+    if (error.response.status === 422 || error.response.status === 401) {
+      toast.error(
+        `${error.response.data.errors.email}  ${error.response.data.message}`
+      );
+      return null;
+    }
+    if (error.response.statusText !== "OK") {
+      throw json({ message: "Could not register User." }, { status: 500 });
+    }
   }
-  if (!response.ok) {
-    throw json({ message: "Could not register User." }, { status: 500 });
-  }
-
-  return redirect("/");
 };
-
-// export const action = async ({ request, params }) => {
-//   const data = await request.formData();
-//   const formData = {
-//     firstName: data.get("firstName"),
-//     lastName: data.get("lastName"),
-//     email: data.get("email"),
-//     password: data.get("password"),
-//     userType: data.get("userType"),
-//     DT: new Date().toLocaleString(),
-//     isActive: true,
-//   };
-//   const response = await fetch(
-//     "https://react-http-58c10-default-rtdb.firebaseio.com/users.json",
-//     {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(formData),
-//     }
-//   );
-//   if (!response.ok) {
-//     throw json({ message: "Could not save User." }, { status: 500 });
-//   }
-//   return redirect("/login");
-// };

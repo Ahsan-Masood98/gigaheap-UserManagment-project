@@ -1,4 +1,5 @@
-import { json, redirect } from "react-router-dom";
+import { redirect } from "react-router-dom";
+import { getCurrUser } from "../Services/usersServices";
 
 export function getAuthToken() {
   const token = localStorage.getItem("token");
@@ -19,14 +20,7 @@ export const checkAuthLoader = async () => {
     return redirect("/");
   }
   const id = getCurrentUserId();
-  const response = await fetch("http://localhost:8080/users/" + id, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-  if (!response.ok) {
-    throw json({ message: "Could not fetch User." }, { status: 500 });
-  }
+  const response = await getCurrUser(id);
+
   return response;
 };

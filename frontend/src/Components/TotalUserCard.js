@@ -1,6 +1,6 @@
 import React from "react";
 
-const TotalUserCard = ({ data }) => {
+const TotalUserCard = ({ users }) => {
   return (
     <>
       {/* <!-- Content Row --> */}
@@ -15,7 +15,7 @@ const TotalUserCard = ({ data }) => {
                     Total User
                   </div>
                   <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {data.users.length}
+                    {users.length}
                   </div>
                 </div>
                 <div className="col-auto">

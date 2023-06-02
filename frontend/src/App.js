@@ -25,14 +25,13 @@ function App() {
     {
       path: "/signup",
       element: <Signup />,
-
       action: signUpAction,
     },
     {
       path: "/dashboard",
       id: "uesrDetail",
       element: <DashboardLayout />,
-
+      errorElement: <ErrorPage />,
       loader: checkAuthLoader,
       children: [
         {
